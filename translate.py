@@ -4,6 +4,8 @@ import gradio as gr
 import openai 
 from pydub import AudioSegment
 import datetime
+from gtts import gTTS
+from playsound import playsound
 
 load_dotenv()                 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -44,10 +46,12 @@ def translate(audio):
                       ]
                   )
     
-    print(transcript)
-    print(response)
-    print(response['choices'][0]['message']['content'])
-    # return transcript["text"] 
-    return response['choices'][0]['message']['content']
-ui = gr.Interface(fn=translate, inputs=gr.Audio(source="microphone", type="filepath"), outputs="text",live=True)
+    text = response['choices'][0]['message']['content']
+    speech = gTTS(text)
+    speech_file_name = f"{timestamp}.mp3"
+    speech_path = os.path.join(user_path, speech_file_name)
+    speech.save(speech_path)
+    playsound(speech_path)
+    # return speech_path
+ui = gr.Interface(fn=translate, inputs=gr.Audio(source="microphone", type="filepath"), outputs="audio", live=True)
 ui.launch(share=True)
