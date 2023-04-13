@@ -52,6 +52,6 @@ def translate(audio):
     speech_path = os.path.join(user_path, speech_file_name)
     speech.save(speech_path)
     playsound(speech_path)
-    # return speech_path
+    # return speech_path sd
 ui = gr.Interface(fn=translate, inputs=gr.Audio(source="microphone", type="filepath"), outputs="audio", live=True)
 ui.launch(share=True)
